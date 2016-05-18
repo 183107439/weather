@@ -12,20 +12,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Weather {
-	private List<String> provinceMessage=new ArrayList<String>();
+	private List<String> allProvinces=new ArrayList<String>();
 	private static String allMessage="";
 	
 	public static void main(String[] args) {
 		Weather we=new Weather();
-		System.out.println(we.post());
-		we.provinceMessage=we.getProvince(allMessage);
-		for (String string : we.provinceMessage) {
+//		System.out.println(we.getCitys());
+		we.getCitys();
+		we.allProvinces=we.getProvince(allMessage);
+		for (String string : we.allProvinces) {
 			System.out.println(string);
 		}
+
 	}
 	
-	//HTTP post请求并获取天气信息
-	public String post(){
+	//HTTP post请求并获取Province可支持的城市
+	public String getCitys(){
 		OutputStreamWriter out=null;
 //		String allMessage="";
 		try {
@@ -61,14 +63,39 @@ public class Weather {
 		return allMessage;
 	}
 	
+	//解析得到的数据
 	public List<String> getProvince(String allMessage) {
 		int beingIndex=allMessage.indexOf("<string>")+8;
 		int endIndex=allMessage.lastIndexOf("</string>");
 		String str=allMessage.substring(beingIndex, endIndex);
 		String[] arrStr=str.split("</string>  <string>");
-		for (String string : arrStr) {			
-			provinceMessage.add(string);
+		for (int i = 0; i < arrStr.length; i++) {
+			int indexTemp=arrStr[i].indexOf(",");
+			String strTemp=arrStr[i].substring(0, indexTemp);
+			allProvinces.add(strTemp);
 		}
-		return provinceMessage;
+//		int i=2;
+//		System.out.println(arrStr[i]);
+		return allProvinces;
 	}
+	
+	//dom4j 解析XML文档--转换成字符串
+//	public void getWeatherInformation(){
+//		// 创建saxreader对象
+//				SAXReader reader = new SAXReader();
+//				// 读取一个文件，把这个文件转换成Document对象
+//				Document document=null;
+//				try {
+//					document = reader.read(new File("H://JAVA//weather//a.xml"));
+//				} catch (DocumentException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//				// 获取根元素
+//				Element root = document.getRootElement();
+//				// 把文档转换字符串
+//				String docXmlText = document.asXML();
+//				System.out.println(docXmlText);
+//				System.out.println("---------------------------");
+//	}
 }
